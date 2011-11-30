@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Clover.ClientLibrary
 {
-    public class Context : IDisposable
+    public class Hashtable : IDisposable
     {
-
+          
 
 
         public void Dispose()

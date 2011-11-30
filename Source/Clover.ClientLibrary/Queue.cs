@@ -5,9 +5,12 @@ using System.Text;
 
 namespace Clover.ClientLibrary
 {
-    public class Context : IDisposable
+    public class Queue<T> : IDisposable
     {
+        private Queue()
+        {
 
+        }
 
 
         public void Dispose()

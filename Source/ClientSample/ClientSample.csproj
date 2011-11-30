@@ -46,6 +46,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Clover.ClientLibrary\Clover.ClientLibrary.csproj">
+      <Project>{10D92779-F625-4675-9B6E-5E02DB689DAB}</Project>
+      <Name>Clover.ClientLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
