@@ -31,9 +31,9 @@ namespace Clover.ClientLibrary
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        /// <param name="oldValue"></param>
+        /// <param name="newValue"></param>
         /// <returns></returns>
-        public bool SetWithVersion(string key, object value, out object oldValue)
+        public bool SetWithVersion(string key, object value, out object newValue)
         {
             throw new NotImplementedException();
         }
@@ -42,11 +42,34 @@ namespace Clover.ClientLibrary
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public object Get(string key)
+        public byte[] Get(string key)
         {
             throw new NotImplementedException();
         }
-        
+        public object Get(string key, Func<byte[], object> transferFunc)
+        {
+            throw new NotImplementedException();
+        }
+        public object Get(Type type, string key)
+        {
+            throw new NotImplementedException();
+        }
+        public T Get<T>(string key)
+        {
+            throw new NotImplementedException();
+        }
+        public List<object> MGet(Type type, params string[] keys)
+        {
+            throw new NotImplementedException();
+        }
+        public List<T> MGet<T>(params string[] keys)
+        {
+            throw new NotImplementedException();
+        }
+        public List<byte[]> MGet(params string[] keys)
+        {
+            throw new NotImplementedException();
+        }
 
         public void Dispose()
         {
