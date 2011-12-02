@@ -11,6 +11,7 @@ namespace Clover.Server
         public IPAddress Server { get; set; }
         public int Port { get; set; }
         public ServerConnectionType ConnectionType { get; set; }
+        public ServerType ServerType { get; set; }
     }
 
     public enum ServerConnectionType
