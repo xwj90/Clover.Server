@@ -52,12 +52,13 @@ namespace Clover.Server
                 Socket s = result.AsyncState as Socket;
                 StateObject state = new StateObject();
                 int bytesTransferred = 0;
-                Socket handler = s.EndAccept(out state.CommandByte, out bytesTransferred, result);
+                byte[] data = null;
+                Socket handler = s.EndAccept(out data, out bytesTransferred, result);
 
-                Console.WriteLine("EndAccept data:" + string.Join(" ", state.CommandByte));
+                Console.WriteLine("EndAccept data:" + string.Join(" ", data));
 
                 sockets.AddOrUpdate(handler.RemoteEndPoint, handler, (p, q) => { return handler; });
-
+                state.WorkSocket = handler;
                 handler.BeginReceive(state.CommandByte, 0, state.CommandByte.Length, SocketFlags.Peek, NewComingCommand, state);
 
                 allDone.Set();
@@ -74,6 +75,7 @@ namespace Clover.Server
         {
 
             StateObject state = result.AsyncState as StateObject;
+            int v = state.WorkSocket.EndReceive(result);
 
             Console.WriteLine("Get Input data:" + string.Join(" ", state.CommandByte));
         }
