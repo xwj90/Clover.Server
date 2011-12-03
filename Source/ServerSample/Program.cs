@@ -52,8 +52,9 @@ namespace ServerSample
             //  IPEndPoint ep = new IPEndPoint((Dns.Resolve(IPAddress.Any.ToString())).AddressList[0], port);
 
             s.Connect(ep);
-           // Thread.Sleep(1000);
+            // Thread.Sleep(1000);
             s.Send(data);
+            s.Disconnect(true);
             return s;
         }
     }

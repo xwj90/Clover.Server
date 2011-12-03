@@ -54,6 +54,7 @@ namespace Clover.Server
                 int bytesTransferred = 0;
                 byte[] data = null;
                 Socket handler = s.EndAccept(out data, out bytesTransferred, result);
+                //first 4 bytes data will be in data.  i don't know why bytesTransferrd is 56
 
                 Console.WriteLine("EndAccept data:" + string.Join(" ", data));
 
