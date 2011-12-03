@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
+    <Compile Include="StateObject.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerConfiguration.cs" />
     <Compile Include="ServerConnection.cs" />

@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace Clover.Server
 {
@@ -14,12 +15,29 @@ namespace Clover.Server
 
         public void Start(ServerConfiguration config)
         {
-            Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Socket listenSocket = new Socket(AddressFamily.Unspecified, SocketType.Stream, ProtocolType.Tcp);
             IPEndPoint ep = new IPEndPoint(config.Server, config.Port);
             listenSocket.Bind(ep);
             listenSocket.Listen(config.BackLog);
-            listenSocket.BeginAccept(NewComingConnection, listenSocket);
+
+
+            while (true)
+            {
+                // Set the event to nonsignaled state.
+                allDone.Reset();
+
+                // Start an asynchronous socket to listen for connections and receive data from the client.
+                Console.WriteLine("Waiting for a connection...");
+
+                StateObject state = new StateObject() { WorkSocket = listenSocket };
+                listenSocket.BeginAccept(Command.ByteLength, NewComingConnection, listenSocket);
+
+                // Wait until a connection is made and processed before continuing.
+                allDone.WaitOne();
+            }
         }
+        private static AutoResetEvent allDone = new AutoResetEvent(false);
+
         public void Start()
         {
             Start(null);
@@ -27,19 +45,39 @@ namespace Clover.Server
 
         private static void NewComingConnection(IAsyncResult result)
         {
-            Socket s = result.AsyncState as Socket;
-            sockets.AddOrUpdate(s.RemoteEndPoint, s, (p, q) => { return s; });
+            try
+            {
+                Console.WriteLine("New Connection Coming in;");
 
-            byte[] data = new byte[4];
-            s.BeginReceive(data, 0, 4, SocketFlags.None, NewComingCommand, data);
+                Socket s = result.AsyncState as Socket;
+                StateObject state = new StateObject();
+                int bytesTransferred = 0;
+                Socket handler = s.EndAccept(out state.CommandByte, out bytesTransferred, result);
+
+                Console.WriteLine("EndAccept data:" + string.Join(" ", state.CommandByte));
+
+                sockets.AddOrUpdate(handler.RemoteEndPoint, handler, (p, q) => { return handler; });
+
+                handler.BeginReceive(state.CommandByte, 0, state.CommandByte.Length, SocketFlags.Peek, NewComingCommand, state);
+
+                allDone.Set();
+            }
+            catch (SocketException ex)
+            {
+
+            }
+
         }
 
 
         private static void NewComingCommand(IAsyncResult result)
         {
-            Socket s = result.AsyncState as Socket;
+
+            StateObject state = result.AsyncState as StateObject;
+
+            Console.WriteLine("Get Input data:" + string.Join(" ", state.CommandByte));
         }
-        
+
     }
 
 
