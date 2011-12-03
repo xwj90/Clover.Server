@@ -36,7 +36,7 @@ namespace ServerSample
 
                 Thread.Sleep(200);
 
-                SocketHelper.Send("127.0.0.1", 10086, new byte[] { 0x2, 0x1, 0x1, 0x2, 0x3, 0x3, 0x3, 0x3, 0x1, 0x1, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2 });
+                SocketHelper.Send("127.0.0.1", 10086, new byte[] { 0x1, 0x1, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 3, 3, 3, 3, 4, 4, 4, 4 });
             }
         }
 
@@ -52,7 +52,7 @@ namespace ServerSample
             //  IPEndPoint ep = new IPEndPoint((Dns.Resolve(IPAddress.Any.ToString())).AddressList[0], port);
 
             s.Connect(ep);
-            // Thread.Sleep(1000);
+            s.Send(BitConverter.GetBytes(0));
             s.Send(data);
             s.Disconnect(true);
             return s;

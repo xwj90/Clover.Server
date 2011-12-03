@@ -47,7 +47,6 @@ namespace Clover.Server
         {
             try
             {
-                Console.WriteLine("New Connection Coming in;");
 
                 Socket s = result.AsyncState as Socket;
                 StateObject state = new StateObject();
@@ -56,20 +55,44 @@ namespace Clover.Server
                 Socket handler = s.EndAccept(out data, out bytesTransferred, result);
                 //first 4 bytes data will be in data.  i don't know why bytesTransferrd is 56
 
-                Console.WriteLine("EndAccept data:" + string.Join(" ", data));
-
-                sockets.AddOrUpdate(handler.RemoteEndPoint, handler, (p, q) => { return handler; });
+                state.CommandType = (CommandType)BitConverter.ToInt32(data, 0);
                 state.WorkSocket = handler;
-                handler.BeginReceive(state.CommandByte, 0, state.CommandByte.Length, SocketFlags.Peek, NewComingCommand, state);
+                Console.WriteLine("New Connection commandType:" + state.CommandType);
 
-                allDone.Set();
+                HandleCommandType(state);
+  
             }
             catch (SocketException ex)
             {
 
             }
-
+            finally
+            {
+                allDone.Set();
+            }
         }
+        private static void HandleCommandType(StateObject state)
+        {
+            switch (state.CommandType)
+            {
+                case CommandType.Unknown:
+                case CommandType.Test:
+                    {
+                        state.WorkSocket.Send(BitConverter.GetBytes(1));
+                        state.WorkSocket.Send(Encoding.UTF8.GetBytes("Server have received test data"));
+                        state.WorkSocket.Disconnect(true);
+                        return;
+                    }
+                default:
+                    {
+                        sockets.AddOrUpdate(state.WorkSocket.RemoteEndPoint, state.WorkSocket, (p, q) => { return state.WorkSocket; });
+                        state.WorkSocket.BeginReceive(state.CommandByte, 0, state.CommandByte.Length, SocketFlags.Peek, NewComingCommand, state);
+               
+                        break;
+                    }
+            }
+        }
+
 
 
         private static void NewComingCommand(IAsyncResult result)

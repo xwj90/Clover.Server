@@ -13,6 +13,7 @@ namespace Clover.Server
         {
             CommandByte = new byte[16];
         }
+        public CommandType CommandType;
         public byte[] CommandByte;
 
         public Socket WorkSocket { get; set; }
