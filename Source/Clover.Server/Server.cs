@@ -60,7 +60,7 @@ namespace Clover.Server
                 Console.WriteLine("New Connection commandType:" + state.CommandType);
 
                 HandleCommandType(state);
-  
+
             }
             catch (SocketException ex)
             {
@@ -73,24 +73,8 @@ namespace Clover.Server
         }
         private static void HandleCommandType(StateObject state)
         {
-            switch (state.CommandType)
-            {
-                case CommandType.Unknown:
-                case CommandType.Test:
-                    {
-                        state.WorkSocket.Send(BitConverter.GetBytes(1));
-                        state.WorkSocket.Send(Encoding.UTF8.GetBytes("Server have received test data"));
-                        state.WorkSocket.Disconnect(true);
-                        return;
-                    }
-                default:
-                    {
-                        sockets.AddOrUpdate(state.WorkSocket.RemoteEndPoint, state.WorkSocket, (p, q) => { return state.WorkSocket; });
-                        state.WorkSocket.BeginReceive(state.CommandByte, 0, state.CommandByte.Length, SocketFlags.Peek, NewComingCommand, state);
-               
-                        break;
-                    }
-            }
+            CommandHandler handler = new CommandHandler();
+            handler.Call(state);
         }
 
 
