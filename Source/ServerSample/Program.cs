@@ -32,11 +32,12 @@ namespace ServerSample
         {
             for (int i = 0; i < 1; i++)
             {
-
+                Thread.Sleep(200);
+                SocketHelper.Send("127.0.0.1", 10086, new byte[] { 0x1, 0x1, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 3, 3, 3, 3, 4, 4, 4, 4 });
 
                 Thread.Sleep(200);
-
                 SocketHelper.Send("127.0.0.1", 10086, new byte[] { 0x1, 0x1, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 3, 3, 3, 3, 4, 4, 4, 4 });
+
             }
         }
 
@@ -52,8 +53,14 @@ namespace ServerSample
             //  IPEndPoint ep = new IPEndPoint((Dns.Resolve(IPAddress.Any.ToString())).AddressList[0], port);
 
             s.Connect(ep);
-            s.Send(BitConverter.GetBytes(0));
+            s.Send(BitConverter.GetBytes(Convert.ToInt32(CommandType.SendHashData)));
+
+            string hashtable = "HashtableName";
+            string key = "HashtableName";
+            object value = new object();
             s.Send(data);
+
+
             s.Disconnect(true);
             return s;
         }

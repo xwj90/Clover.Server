@@ -64,6 +64,11 @@ namespace Clover.Server
         {
             Console.WriteLine("HandledReset has called");
         }
+
+        public static void HandledSendHashData(StateObject state)
+        {
+            Console.WriteLine("HandledReset has called");
+        }
         #endregion
 
         #region default handler if can not find given name

@@ -31,6 +31,11 @@ namespace Clover.Server
         #region System  0x10 - 0x1f
         ReStart = 0x10,
         ShutDown = 0x11,
+
+        NewServer = 0x18,
+        RemoveServer = 0x19,
+
+        GetServerList=0x20,
         #endregion
 
         #region System Data 0x20 - 0x2f
